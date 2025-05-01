@@ -8,7 +8,7 @@ Skills:
 Docker, Kubernetes, Linux, Python, Shell Scripting
 
 Education:
-B.Sc. in Computer Engineering - King Fahd University of Petroleum and Minerals
+B.Sc. in Computer Engineering - University of Jeddah
 
 Experience:
 - DevOps Intern at CloudForge Solutions (2023)
