@@ -1,0 +1,16 @@
+Name: Faisal Alotaibi
+Email: faisalAlotaibi@uj.edu.sa
+
+Objective:
+To join a cutting-edge AI research team focused on machine learning and NLP innovations.
+
+Skills:
+Python, Machine Learning, Research, TensorFlow, NLP
+
+Education:
+M.Sc. in Artificial Intelligence – KAUST
+
+Experience:
+- AI Research Intern at DeepVision Labs (2023)
+  • Built models using TensorFlow
+  • Worked on a project involving natural language processing and deep learning

@@ -1,0 +1,21 @@
+Name: Yazan Alghamdi
+Email: yazanAlghamdi@uj.edu.sa
+
+Objective:
+To obtain a position as a DevOps Engineer where I can automate infrastructure and streamline CI/CD pipelines.
+
+Skills:
+Docker, Kubernetes, Linux, Python, Shell Scripting
+
+Education:
+B.Sc. in Computer Engineering - King Fahd University of Petroleum and Minerals
+
+Experience:
+- DevOps Intern at CloudForge Solutions (2023)
+  • Created CI/CD pipelines using GitHub Actions and Jenkins
+  • Managed Kubernetes clusters and automated Docker container builds
+  • Wrote shell scripts for deployment tasks and monitoring
+
+Projects:
+- Cloud Deployment Automation with Ansible
+- Jenkins Pipeline Optimization
