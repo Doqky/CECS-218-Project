@@ -9,36 +9,39 @@ def build_training_data(job_skills_list):
         job_vectors = []
 
         for job in job_skills_list:
-            job_vector = []
-            
-            job_lower = job.lower().split()
+            job_vector = []  
+            job_words = job.lower().split() 
 
             for skill in all_skills:
-                if skill in job_lower:
+                if skill in job_words:
                     job_vector.append(1)
                 else:
                     job_vector.append(0)
 
-            job_vectors.append(job_vector)
+            job_vectors.append(job_vector)  
 
         job_vectors = np.array(job_vectors)
+
 
         return job_vectors, all_skills
     except Exception as e:
         print(f"Error building training data: {e}")
 
 def vectorize_candidate(candidate_skills, all_skills):
+    try: 
+        job_vector=[]
 
-   job_vector=[]
+        for skill in all_skills:
+            if skill in candidate_skills:
+                job_vector.append(1)
+            else:
+                job_vector.append(0)
+        return np.array([job_vector])
 
-   for skill in all_skills:
-       if skill in candidate_skills:
-           job_vector.append(1)
-       else:
-           job_vector.append(0)
+    except Exception as e:
+        print(f"Error vectorizing candidate skills: {e}")
 
-   return np.array([job_vector])
-
+        
 
 def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_skills_func, job_roles):
     try:
@@ -79,7 +82,7 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
 
             try:
                 plt.figure(figsize=(10, 5))
-                bars = plt.bar(job_roles, similarities)
+                bars = plt.bar(job_roles, similarities, color='skyblue')
                 plt.xticks(rotation=45, ha='right')
                 plt.ylim(0,1)
                 plt.title(f"Resume {i+1} - Similarity Scores to Job Roles")
