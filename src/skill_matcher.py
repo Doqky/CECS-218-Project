@@ -6,18 +6,38 @@ import numpy as np
 def build_training_data(job_skills_list):
     try:
         all_skills = list(set(' '.join(job_skills_list).lower().split()))
-        job_vectors = np.array([[1 if skill in job.lower().split() else 0 for skill in all_skills] for job in job_skills_list])
+        job_vectors = []
+
+        for job in job_skills_list:
+            job_vector = []
+            
+            job_lower = job.lower().split()
+
+            for skill in all_skills:
+                if skill in job_lower:
+                    job_vector.append(1)
+                else:
+                    job_vector.append(0)
+
+            job_vectors.append(job_vector)
+
+        job_vectors = np.array(job_vectors)
+
         return job_vectors, all_skills
     except Exception as e:
         print(f"Error building training data: {e}")
-        return np.array([]), []
 
 def vectorize_candidate(candidate_skills, all_skills):
-    try:
-        return np.array([[1 if skill in candidate_skills else 0 for skill in all_skills]])
-    except Exception as e:
-        print(f"Error vectorizing candidate: {e}")
-        return np.array([[]])
+
+   job_vector=[]
+
+   for skill in all_skills:
+       if skill in candidate_skills:
+           job_vector.append(1)
+       else:
+           job_vector.append(0)
+
+   return np.array([job_vector])
 
 
 def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_skills_func, job_roles):
@@ -26,20 +46,26 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
 
         for i, resume_path in enumerate(resume_files):
             print("\n---------------------------")
-            
+
 
             text = extract_text_func(resume_path)
-            if not text:
-                continue
-            name_match = re.search(r'Name[:\s]*([A-Z][a-z]+\s[A-Z][a-z]+)', text)
-            email_match = re.search(r'[\w.-]+@[\w.-]+', text)
-            name = name_match.group(1) if name_match else "Name not found"
-            email = email_match.group(0) if email_match else "Email not found"
-            print(f"Processing Resume {i+1} - {name} ({email}):")
+
+            name_matches = re.findall(r'Name[:\s]*([A-Z][a-z]+\s[A-Z][a-z]+)', text)
+            if name_matches:
+                name = name_matches[0]
+            else:
+                name = "Name not found"
+
+            email_matches = re.findall(r'[\w.-]+@[\w.-]+', text)
+            if email_matches:
+                email = email_matches[0]
+            else:
+                email = "Email not found"
+
+            print(f"Processing Resume {i+1} | name :  {name} | email :  ({email})")
             skills = extract_skills_func(text, job_skills_list)
             print("Extracted Candidate Skills:", skills)
-            if not skills:
-                continue
+
             candidate_vector = vectorize_candidate(skills, all_skills)
 
             similarities = cosine_similarity(candidate_vector, job_vectors)[0]
@@ -53,14 +79,14 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
 
             try:
                 plt.figure(figsize=(10, 5))
-                bars = plt.bar(job_roles, similarities, color='skyblue')
+                bars = plt.bar(job_roles, similarities)
                 plt.xticks(rotation=45, ha='right')
-                plt.ylim(0, 1)
+                plt.ylim(0,1)
                 plt.title(f"Resume {i+1} - Similarity Scores to Job Roles")
                 plt.xlabel("Job Role")
                 plt.ylabel("Similarity Score")
                 for bar, score in zip(bars, similarities):
-                    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02, f"{score:.2f}", ha='center', va='bottom')
+                    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02, f"{score:.2f}", ha='center')
                 plt.tight_layout()
                 plt.show()
             except Exception as plot_err:
