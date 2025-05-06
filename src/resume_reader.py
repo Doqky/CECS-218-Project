@@ -1,25 +1,30 @@
 import re
+from docx import Document
 
-def extract_text_from_txt(file_path): 
+def extract_text_from_docx(file_path):
     """
-    Extracts text from a .txt file.
+    Extracts text from a .docx (Word) file.
 
     Args:
-        file_path (str): Path to the .txt file.
+        file_path (str): Path to the .docx file.
 
     Returns:
-        str: Extracted text from the file.
-
+        str: Combined text from all paragraphs in the document.
     """
-
+    
     try:
-        with open(file_path, 'r') as file: # Open the file in read mode
-            return file.read() # Read the content of the file and return it as a string
-        
+        doc = Document(file_path)  #this is to load the docx file to access its content
+        text = ""  # Initialize an empty string to store the text
+        for para in doc.paragraphs: # Iterate through each paragraph in the document
+            text += para.text # extract the plain text from the paragraph and append it to the text variable
+        return text
     except FileNotFoundError:
         print(f"Error: File not found - {file_path}")
+        return ""
     except Exception as e:
-        print(f"Error reading file {file_path}: {e}")
+        print(f"Error reading DOCX file {file_path}: {e}")
+        return ""
+
 
 def extract_skills( text , job_skills_list):
     """
