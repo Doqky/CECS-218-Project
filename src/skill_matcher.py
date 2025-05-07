@@ -14,37 +14,47 @@ def build_training_data(job_skills_list):
     Returns:
     job_vectors: A 2D numpy array where each row corresponds to a job and each column corresponds to a skill.
     all_skills: A list of all unique skills extracted from the job descriptions.
-
     """
+
     try:
-        all_skills = list(set(' '.join(job_skills_list).lower().split())) #This will give us a list of all the unique (non-duplicate) skills in the job descriptions, and we will use this to vectorize the candidate skills
+        if not job_skills_list:
+            print("Warning: job_skills_list is empty.")
+            return np.array([]), []
+            
 
-        job_vectors = [] #this will be the array that will store all the job vectors in a 2s format later 
-    
-        for job in job_skills_list:   #each index in job corresponds to the entire skill set for that job, since the list returned from job_skills = jobs_df['skills'].tolist() looks like 
-                                      #"Python Data Analysis Excel SQL",                      index 0 → Data Analyst
-                                      #"Python Machine Learning Deep Learning Statistics",    index 1 → ML Engineer
-                                      #"Java C++ Python Git"                                  index 2 → Software Dev        
+        all_skills = list(set(' '.join(job_skills_list).lower().split()))  # This will give us a list of all the unique (non-duplicate) skills in the job descriptions, and we will use this to vectorize the candidate skills
 
-            job_vector = []  #each job will have a unique array 
-            job_words = job.lower().split() #This turns the job into a list of words, so that we can check if the skill is in the job description
+        if not all_skills:
+            print("Warning: No unique skills extracted from job_skills_list.")
+            return np.array([]), []
+            
+
+        job_vectors = []  # this will be the array that will store all the job vectors in a 2D format later 
+
+        for job in job_skills_list:   # each index in job corresponds to the entire skill set for that job, since the list returned from job_skills = jobs_df['skills'].tolist() looks like 
+                                      # "Python Data Analysis Excel SQL",                      index 0 → Data Analyst
+                                      # "Python Machine Learning Deep Learning Statistics",    index 1 → ML Engineer
+                                      # "Java C++ Python Git"                                  index 2 → Software Dev        
+
+            job_vector = []  # each job will have a unique array 
+            job_words = job.lower().split()  # This turns the job into a list of words, so that we can check if the skill is in the job description
 
             for skill in all_skills:
                 if skill in job_words:
-                    job_vector.append(1) #if the skill is in the job description, append 1 to the job_vector
+                    job_vector.append(1)  # if the skill is in the job description, append 1 to the job_vector
                 else:
-                    job_vector.append(0) #if the skill is not in the job description, append 0 to the job_vector
-                                        #The reason we added 1s and 0s is because we are going to use cosine similarity to compare the job vectors, and we need a numerical representation of the skills in the job description
+                    job_vector.append(0)  # if the skill is not in the job description, append 0 to the job_vector
+                                          # The reason we added 1s and 0s is because we are going to use cosine similarity to compare the job vectors, and we need a numerical representation of the skills in the job description
 
-            job_vectors.append(job_vector)   #each job vector is appended to the job_vectors list, which will be a 2D array
+            job_vectors.append(job_vector)  # each job vector is appended to the job_vectors list, which will be a 2D array
 
-        job_vectors = np.array(job_vectors) #convert the job_vectors list to a numpy array so that we can use cosine similarity on it
+        job_vectors = np.array(job_vectors)  # convert the job_vectors list to a numpy array so that we can use cosine similarity on it
 
-
-        return job_vectors, all_skills #job_vectors is a 2D array where each row corresponds to a job and each column corresponds to a skill, and all_skills is a list of all the skills in the job descriptions which will be used to vectorize the candidate skills 
+        return job_vectors, all_skills  # job_vectors is a 2D array where each row corresponds to a job and each column corresponds to a skill, and all_skills is a list of all the skills in the job descriptions which will be used to vectorize the candidate skills 
     
     except Exception as e:
-        print(f"Error building training data: {e}")
+        print(f"Error building trainingdata:{e}")
+
 
 
 
@@ -60,10 +70,19 @@ def vectorize_candidate(candidate_skills, all_skills):
     
     Returns:
         job_vector: A 1D numpy array where each element corresponds to a skill in the all_skills list.
-
     """
 
     try: 
+        # Check if all_skills is empty or None
+        if not all_skills:
+            print("Warning: all_skills list is empty or None")
+            return np.array([[]])
+
+        # Check if candidate_skills is empty or None
+        if not candidate_skills:
+            print("Warning: candidate_skills list is empty or None")
+            return np.array([[]])
+
         job_vector=[] #this will be the array that will store the candidate skills in a 1D format later 
 
         for skill in all_skills: #for each skill in the all_skills list, we will check if it is in the candidate skills list
@@ -74,11 +93,11 @@ def vectorize_candidate(candidate_skills, all_skills):
             else:
                 job_vector.append(0) #if the skill is not in the candidate skills list, append 0 to the job_vector
 
-
         return np.array([job_vector]) #convert the job_vector list to a numpy array so that we can use cosine similarity on it
 
     except Exception as e:
         print(f"Error vectorizing candidate skills: {e}")
+
 
         
 
@@ -97,15 +116,22 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
 
     Returns:
         None: The function prints the results and generates plots for each resume.
-
     """
     try:
         job_vectors, all_skills = build_training_data(job_skills_list) #build the training data using the job skills list, and also extracting the all_skills list from it to use it on other functions 
+        
+        # Safety check for empty skills
+        if len(all_skills) == 0 or job_vectors.size == 0:
+            print("Warning: No skills or job vectors were extracted.")
+            return
 
         for i, resume_path in enumerate(resume_files): #this will iterate through the resume files and give us the index of the resume file as well as the path to the resume file
             print("\n---------------------------")
 
             text = extract_text_func(resume_path) #extract the entire resume file into a string 
+            if not text:
+                print(f"Warning: No text extracted from {resume_path}.")
+                continue
 
             name_matches = re.findall(r'Name[:\s]*([A-Z][a-z]+\s[A-Z][a-z]+)', text) #this will find the name of the candidate from the resume's text by using the regex module
             if name_matches:
@@ -125,9 +151,16 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
                                                                 #the skills extracted from this function will be used to vectorize the candidate skills using the vectorize_candidate function
                                                                 #it will only return the skills that match the job description, and not all the skills in the resume
             
+            if not skills:
+                print(f"Warning: No skills extracted from resume {i+1}.")
+                continue
+
             print("Extracted Candidate Skills:", skills) #this will print the skills that were extracted from the resume in a readable format
 
             candidate_vector = vectorize_candidate(skills, all_skills) #this will vectorize the candidate's skills and return it in a 1D format that consists of 1s and 0s
+            if candidate_vector.size == 0:
+                print(f"Warning: Candidate vector is empty for resume {i+1}.")
+                continue
 
             similarities = cosine_similarity(candidate_vector, job_vectors)[0] #cosine similarity will return a 2D array with only 1 row, so we use the [0] to get the first row of the array, which will be a 1D array that contains the similarity scores between the candidate's skills and the job descriptions
                                                                                #The candidate vector is a 1D array, and the job vectors is a 2D array, both of the same length, so we can use cosine similarity to compare them
