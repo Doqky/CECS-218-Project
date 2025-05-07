@@ -43,12 +43,28 @@ def extract_skills(text, job_skills_list):
     """
 
     try:
-        all_skills = list(set(' '.join(job_skills_list).lower().split()))
-        text_words = set(re.findall(r'\b\w[\w+.]*\b', text.lower()))
+        # Check if job_skills_list is empty or None
+        if not job_skills_list:
+            print("Warning: job_skills_list is empty")
+            return []
+
+        # Check if text is empty or None
+        if not text:
+            print("Warning: input text is empty")
+            return []
+
+        all_skills = list(set(' '.join(job_skills_list).lower().split())) # Create a set of all skills from the job_skills_list
+        text_words = set(re.findall(r'\b\w[\w+.]*\b', text.lower())) # Extract words from the text
         matched_skills = []
-        for skill in all_skills:
-            if skill in text_words:
-                matched_skills.append(skill)
+
+        for skill in all_skills: # Iterate through each skill
+            if skill in text_words: # Check if the skill is in the text
+                matched_skills.append(skill) # If the skill is found, add it to the matched_skills list
+
+        if not matched_skills:
+            print("Warning: No skills matched in the provided text")
+            return []
+
         return matched_skills
 
     except Exception as e:
