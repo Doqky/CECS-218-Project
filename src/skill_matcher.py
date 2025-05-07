@@ -24,10 +24,6 @@ def build_training_data(job_skills_list):
 
         all_skills = list(set(' '.join(job_skills_list).lower().split()))  # This will give us a list of all the unique (non-duplicate) skills in the job descriptions, and we will use this to vectorize the candidate skills
 
-        if not all_skills:
-            print("Warning: No unique skills extracted from job_skills_list.")
-            return np.array([]), []
-            
 
         job_vectors = []  # this will be the array that will store all the job vectors in a 2D format later 
 
@@ -75,12 +71,12 @@ def vectorize_candidate(candidate_skills, all_skills):
     try: 
         # Check if all_skills is empty or None
         if not all_skills:
-            print("Warning: all_skills list is empty or None")
+            print("Warning: all_skills list is empty")
             return np.array([[]])
 
         # Check if candidate_skills is empty or None
         if not candidate_skills:
-            print("Warning: candidate_skills list is empty or None")
+            print("Warning: candidate_skills list is empty")
             return np.array([[]])
 
         job_vector=[] #this will be the array that will store the candidate skills in a 1D format later 
