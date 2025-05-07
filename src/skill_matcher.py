@@ -117,8 +117,8 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
         job_vectors, all_skills = build_training_data(job_skills_list) #build the training data using the job skills list, and also extracting the all_skills list from it to use it on other functions 
         
         # Safety check for empty skills
-        if len(all_skills) == 0 or job_vectors.size == 0:
-            print("Warning: No skills or job vectors were extracted.")
+        if len(all_skills) == 0:
+            print("Warning: No skills were extracted.")
             return
 
         for i, resume_path in enumerate(resume_files): #this will iterate through the resume files and give us the index of the resume file as well as the path to the resume file
