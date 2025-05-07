@@ -154,9 +154,7 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
             print("Extracted Candidate Skills:", skills) #this will print the skills that were extracted from the resume in a readable format
 
             candidate_vector = vectorize_candidate(skills, all_skills) #this will vectorize the candidate's skills and return it in a 1D format that consists of 1s and 0s
-            if candidate_vector.size == 0:
-                print(f"Warning: Candidate vector is empty for resume {i+1}.")
-                continue
+            
 
             similarities = cosine_similarity(candidate_vector, job_vectors)[0] #cosine similarity will return a 2D array with only 1 row, so we use the [0] to get the first row of the array, which will be a 1D array that contains the similarity scores between the candidate's skills and the job descriptions
                                                                                #The candidate vector is a 1D array, and the job vectors is a 2D array, both of the same length, so we can use cosine similarity to compare them
