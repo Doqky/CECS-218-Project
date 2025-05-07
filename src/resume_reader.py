@@ -40,8 +40,11 @@ def extract_skills(text, job_skills_list):
     try:
         all_skills = list(set(' '.join(job_skills_list).lower().split()))
         text_words = set(re.findall(r'\b\w[\w+.]*\b', text.lower()))
-        matched_skills = [skill for skill in all_skills if skill in text_words]
-        return matched_skills
-    
+        matched_skills = []
+        for skill in all_skills:
+            if skill in text_words:
+                matched_skills.append(skill)
+                return matched_skills
+            
     except Exception as e:
         print(f"Error extracting skills: {e}")
