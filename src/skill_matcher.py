@@ -51,10 +51,6 @@ def build_training_data(job_skills_list):
     except Exception as e:
         print(f"Error building trainingdata:{e}")
 
-
-
-
-
 def vectorize_candidate(candidate_skills, all_skills): 
     """
     Converts the candidate skills into a 1D array for use in cosine similarity calculations.
@@ -69,15 +65,6 @@ def vectorize_candidate(candidate_skills, all_skills):
     """
 
     try: 
-        # Check if all_skills is empty or None
-        if not all_skills:
-            print("Warning: all_skills list is empty")
-            return np.array([[]])
-
-        # Check if candidate_skills is empty or None
-        if not candidate_skills:
-            print("Warning: candidate_skills list is empty")
-            return np.array([[]])
 
         job_vector=[] #this will be the array that will store the candidate skills in a 1D format later 
 
@@ -93,11 +80,7 @@ def vectorize_candidate(candidate_skills, all_skills):
 
     except Exception as e:
         print(f"Error vectorizing candidate skills: {e}")
-
-
         
-
-
 def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_skills_func, job_roles):
     """
     This function processes each resume, extracts the candidate's skills, and compares them to the job descriptions using cosine similarity.
@@ -146,9 +129,8 @@ def evaluate_resumes(resume_files, job_skills_list, extract_text_func, extract_s
             skills = extract_skills_func(text, job_skills_list) #this will extract the skills from the resume's text using the extract_skills_func function, and also passing the job_skills_list to it so that we can check if the skills are in the job description or not
                                                                 #the skills extracted from this function will be used to vectorize the candidate skills using the vectorize_candidate function
                                                                 #it will only return the skills that match the job description, and not all the skills in the resume
-            
             if not skills:
-                print(f"Warning: No skills extracted from resume {i+1}.")
+                print(f"Warning: No skills matched from resume {i+1}.")
                 continue
 
             print("Extracted Candidate Skills:", skills) #this will print the skills that were extracted from the resume in a readable format

@@ -14,11 +14,7 @@ def extract_text_from_docx(file_path):
 
     try:
         doc = Document(file_path)  # Load the docx file
-
-        if not doc.paragraphs:
-            print(f"Warning: No paragraphs found in the document {file_path}")
-            return ""
-
+        
         text = ""
         for para in doc.paragraphs:  # Iterate through each paragraph
             if para.text: # Check if the paragraph is not empty
@@ -43,16 +39,6 @@ def extract_skills(text, job_skills_list):
     """
 
     try:
-        # Check if job_skills_list is empty or None
-        if not job_skills_list:
-            print("Warning: job_skills_list is empty")
-            return []
-
-        # Check if text is empty or None
-        if not text:
-            print("Warning: input text is empty")
-            return []
-
         all_skills = list(set(' '.join(job_skills_list).lower().split())) # Create a set of all skills from the job_skills_list
         text_words = set(re.findall(r'\b\w[\w+.]*\b', text.lower())) # Extract words from the text
         matched_skills = []
@@ -60,10 +46,6 @@ def extract_skills(text, job_skills_list):
         for skill in all_skills: # Iterate through each skill
             if skill in text_words: # Check if the skill is in the text
                 matched_skills.append(skill) # If the skill is found, add it to the matched_skills list
-
-        if not matched_skills:
-            print("Warning: No skills matched in the provided text")
-            return []
 
         return matched_skills
 
