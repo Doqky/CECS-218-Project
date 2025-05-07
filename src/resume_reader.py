@@ -9,15 +9,22 @@ def extract_text_from_docx(file_path):
         file_path (str): Path to the .docx file.
 
     Returns:
-        str: Combined text from all paragraphs in the document.
+        str: Combined text from all paragraphs in the document, or an empty string if none found.
     """
 
     try:
         doc = Document(file_path)  # Load the docx file
+
+        if not doc.paragraphs:
+            print(f"Warning: No paragraphs found in the document {file_path}")
+            return ""
+
         text = ""
-        for para in doc.paragraphs:  # Iterate through each paragraph in the document
-            text += para.text + "\n" # Append the text of each paragraph to the text variable
+        for para in doc.paragraphs:  # Iterate through each paragraph
+            if para.text: # Check if the paragraph is not empty
+                text += para.text + "\n"
         return text
+
     except FileNotFoundError:
         print(f"Error: File not found - {file_path}")
     except Exception as e:
