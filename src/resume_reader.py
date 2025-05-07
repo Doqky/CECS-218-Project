@@ -15,15 +15,13 @@ def extract_text_from_docx(file_path):
     try:
         doc = Document(file_path)  # Load the docx file
         text = ""
-        for para in doc.paragraphs: 
-            text += para.text + "\n"
+        for para in doc.paragraphs:  # Iterate through each paragraph in the document
+            text += para.text + "\n" # Append the text of each paragraph to the text variable
         return text
     except FileNotFoundError:
         print(f"Error: File not found - {file_path}")
-        return ""
     except Exception as e:
         print(f"Error reading DOCX file {file_path}: {e}")
-        return ""
 
 def extract_skills(text, job_skills_list):
     """
@@ -44,7 +42,7 @@ def extract_skills(text, job_skills_list):
         for skill in all_skills:
             if skill in text_words:
                 matched_skills.append(skill)
-                return matched_skills
-            
+        return matched_skills
+
     except Exception as e:
         print(f"Error extracting skills: {e}")
